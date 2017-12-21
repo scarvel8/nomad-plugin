@@ -16,6 +16,8 @@ public class NomadSlave extends AbstractCloudSlave implements EphemeralNode {
     private static final Logger LOGGER = Logger.getLogger(NomadSlave.class.getName());
 
     private final NomadCloud cloud;
+    private final String namespace;
+    private final String token;
 
     public NomadSlave(
         NomadCloud cloud,
@@ -39,6 +41,8 @@ public class NomadSlave extends AbstractCloudSlave implements EphemeralNode {
         );
 
         this.cloud = cloud;
+        this.namespace = template.getNamespace();
+        this.token = template.getToken();
     }
 
     @Override
@@ -71,7 +75,7 @@ public class NomadSlave extends AbstractCloudSlave implements EphemeralNode {
     @Override
     protected void _terminate(TaskListener listener)  {
         LOGGER.log(Level.INFO, "Asking Nomad to deregister slave '" + getNodeName() + "'");
-        cloud.Nomad().stopSlave(getNodeName());
+        cloud.Nomad().stopSlave(getNodeName(), this.namespace, this.token);
     }
 
     public NomadCloud getCloud() {

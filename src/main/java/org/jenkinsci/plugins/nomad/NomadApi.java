@@ -39,28 +39,31 @@ public final class NomadApi {
         );
 
         LOGGER.log(Level.INFO, slaveJob);
-
+        
         try {
             RequestBody body = RequestBody.create(JSON, slaveJob);
             Request request = new Request.Builder()
+                    .addHeader("X-Nomad-Token", template.getToken())
                     .url(this.nomadApi + "/v1/job/" + slaveName + "?region=" + template.getRegion())
                     .put(body)
                     .build();
 
             client.newCall(request).execute().body().close();
+           
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
 
-    public void stopSlave(String slaveName) {
+    public void stopSlave(String slaveName, String namespace, String token) {
 
         Request request = new Request.Builder()
-                .url(this.nomadApi + "/v1/job/" + slaveName)
+                .addHeader("X-Nomad-Token", token)
+                .url(this.nomadApi + "/v1/job/" + slaveName + "?namespace=" + namespace)
                 .delete()
                 .build();
-
+        
         try {
             client.newCall(request).execute().body().close();
         } catch (IOException e) {
@@ -157,6 +160,7 @@ public final class NomadApi {
         Job job = new Job(
                 name,
                 name,
+                template.getNamespace(),
                 template.getRegion(),
                 "batch",
                 template.getPriority(),
