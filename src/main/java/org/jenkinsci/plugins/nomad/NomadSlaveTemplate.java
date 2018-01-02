@@ -29,6 +29,8 @@ public class NomadSlaveTemplate implements Describable<NomadSlaveTemplate> {
     private final int idleTerminationInMinutes;
     private final int numExecutors;
 
+    private final String namespace;
+    private final String token;
     private final int cpu;
     private final int memory;
     private final int disk;
@@ -52,6 +54,8 @@ public class NomadSlaveTemplate implements Describable<NomadSlaveTemplate> {
 
     @DataBoundConstructor
     public NomadSlaveTemplate(
+            String namespace,
+            String token,
             String cpu,
             String memory,
             String disk,
@@ -71,6 +75,8 @@ public class NomadSlaveTemplate implements Describable<NomadSlaveTemplate> {
             String network,
             String prefixCmd
             ) {
+        this.namespace = namespace;
+        this.token = token;
         this.cpu = Integer.parseInt(cpu);
         this.memory = Integer.parseInt(memory);
         this.disk = Integer.parseInt(disk);
@@ -138,6 +144,13 @@ public class NomadSlaveTemplate implements Describable<NomadSlaveTemplate> {
         return mode;
     }
 
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public String getToken() {
+        return token;
+    }
 
     public int getCpu() {
         return cpu;
